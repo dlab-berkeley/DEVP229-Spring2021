@@ -1,0 +1,163 @@
+---
+title: 'DEVP229: D-Lab Part 1'
+author: "Evan Muzzall"
+date: "1/13/2021"
+output: 
+  html_document: 
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+toc_depth: 3
+number_sections: true
+theme: lumen
+---
+
+# 1. What is R?
+
+R is an open source statistical programming language. A programming language is simply a means to give instructions to a computer. R is incredibly efficient for using your computer to perform computational tasks, produce graphics, and interface with other applications to enhance your data science productivity. 
+
+However, computers do not understand context - if your code instructions are not exact, you will receive an error message. Get ready! You will spend a lot of time debugging error messages and searching for help. 
+
+* Click here to learn more about R: https://en.wikipedia.org/wiki/R_(programming_language)
+
+# 2. RStudio
+
+RStudio is the most efficient integrated development environment for R. This means that RStudio wraps around the R language to enhance its functionality. In addition to coding in R (and other languages) RStudio contains point-and-click functionality for importing data, installing packages, finding help, and exporting publication-ready figures. R and RStudio are often used synonymous to refer to "R programming" more generally, despite these differences. RStudio has substantial support. Click the below links to get started:
+
+### Navigating RStudio
+
+By default, R Scripts and Markdown files will open in the upper left pane of RStudio. You should see four "window panes" in your RStudio application: 
+
+1. Markdown/Script (upper left): this is your input and is easily savable
+2. Console (lower left): output appears here and functions as a nice scratch space
+3. Global Environment (upper right): saved variables will appear here
+4. Misc (lower right): navigate your file system, plots, install packages, view help
+
+ RStudio also has a lot of helpful customizations to improve your experience:
+
+* Click “Tools –-> Global Options -–> Appearance” to change your editor theme, color, and font settings
+* Click “Tools –-> Global Options –-> Code” and check the box that says “Soft-wrap R source files” to wrap the text in your script to the width of the script pane
+* Click “Tools –-> Global Options –-> Code –> Display” and check the boxes that say “Highlight selected line” and “Highlight R function calls”
+* Click "Tools" --> "Global Options" --> "RMarkdown" and **uncheck** "Show output inline for all R Markdown documents" if your output appears here!
+* Learn more about RStudio: <https://en.wikipedia.org/wiki/RStudio>
+* See the RStudio cheatsheets: <https://rstudio.com/resources/cheatsheets/>
+* Also, click the "Tutorial" tab in the upper-right corner of RStudio to get started with the built-in tutorials.
+
+# 3. R Markdown
+
+There are many ways to code in RStudio. The two most common are: R Script and R Markdown.
+
+### 1. R Script (.R)
+
+An R Script is a plain text file with a .R file extension. Click "File" --> "New File" --> "R Script" to open one. These are useful when you do not need to transform your work into another format. 
+
+**Key points:**
+
+1. Enter code normally
+2. Use a hashtag `#` to comment your code and add text
+
+### 2. R Markdown (.Rmd)
+
+The second - and more extensible - is an R Markdown file. R Markdown is a lightweight markup language (this means that it does not considerably affect computation time) that can be formatted and transformed into other documents formats including HTML, PDF, MS Word, slideshows, e-books, dashboards, interactive applications, and websites. HTML files are particularly useful because they are small in size but still look vibrant and dynamic in your web browser. 
+
+Open a new R Markdown file by clicking "File" --> "New File" --> "R Markdown". 
+
+**Key points:**
+
+1. Enter text normally! 
+2. Code must be entered in ["chunks"](https://rmarkdown.rstudio.com/lesson-3.html). A code chunk is Click "Code" --> "Insert Chunk" to insert a space
+3. You can still include hashtags inside of a code chunk to add comments directly to your code. 
+
+* Click this link for more details on using R Markdown: <http://rmarkdown.rstudio.com>
+* See the definitive guide here: <https://rmarkdown.rstudio.com/lesson-1.html>
+
+* R Markdown Cheatsheet: <https://raw.githubusercontent.com/rstudio/cheatsheets/master/rmarkdown-2.0.pdf>
+
+# Example -  Use a single hashtag to make a large header
+
+## Two hashtags for a secondary header
+
+### Three hashtags for a tertiary header
+
+This is a simple example. Text is entered normally here. Wrap your text in **double stars** to bold it. Wrap it in __double italics__ to italicize it. 
+
+* Use an asterisk at the beginning of a line
+* to make a bulleted list
+
+1. Type numbers at the beginning of a line
+2. to make numbered lists
+
+Now, insert a code chunk. Load the School Lunch Dataset!
+
+> Use a greater than symbol to insert an offset note. Press command + enter (Mac) or control + enter (PC) to run a line of code. Or, you can click the green play button to run the entire chunk!
+
+```{r}
+# Enter code here like you would in a plain .R Script file
+# Save text outside of a code chunk to build narrative around your research
+# Use hashtags inside of code chunks to make notes specifically about your code
+
+lunch <- read.csv("School Lunch Data.csv")
+
+# Print the dataset to the screen (will truncate based on your computer's memory limitations)
+
+# Investigate the compact structure of the dataset
+str(lunch)
+
+# Display first six rows (default) of the dataset
+head(lunch)
+
+# Filterable spreadsheet view (unhashtag to view)
+# View(lunch)
+```
+
+Produce basic summary statistics
+
+```{r}
+# See length of character vectors, frequencies of factors, and six-number summaries for continuous data (i.e., numeric and integer type)
+summary(lunch)
+```
+
+Include basic plots
+
+```{r}
+# You can even add a hashtag after a line of runnable code!
+
+hist(lunch$FLE, # column to plot
+     breaks = 5, # adjust number of breaks
+     col = "skyblue", # change bar color
+     main = "Distribution of FLE", # change title 
+     xlab = "FLE", # change x-axis label
+     ylab = "", # Leave blank to omit
+     ylim = c(0, 6), # change y-axis limits
+     las = 1) # change tickmark orientation
+```
+
+```{r}
+boxplot(lunch$API, 
+        las = 1, 
+        ylim = c(700, 1000), 
+        main = "API Boxplot", 
+        ylab = "Score")
+```
+
+*  See the ggplot2 documentation to learn the essentials of the Grammar of Graphics: <https://ggplot2.tidyverse.org/>
+
+# Knitting Markdown files
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. Click the "Knit" button now and this R Markdown file should export to HTML. 
+
+**A few tips:**
+1. To keep things simple, always try to keep your data in the same folder where your R Markdown file lives. 
+
+2. First, set your working directory to the folder where your data and R Markdown file are. Click "Session" --> "Set Working Directory" --> "Choose Directory" to select this folder. 
+
+3. Use the `getwd()` function to check the location. Then, use the `dir()` function to see if your data is there. 
+
+Knitting can be frustrating and tricky until you get it set up correctly. Do you get an error message? 
+
+# If you are running into errors when knitting, try: 
+
+1. Copy/paste this code into your console: `install.packages("rmarkdown")
+
+2. Then try: `install.packages("knitr")
+
+3. Install XQuartz by visiting this website: https://www.xquartz.org/

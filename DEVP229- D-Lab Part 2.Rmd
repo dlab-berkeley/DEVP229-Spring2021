@@ -1,0 +1,230 @@
+---
+title: 'DEVP229: D-Lab Part 2'
+author: "Evan"
+date: "1/13/2021"
+output: 
+  html_document: 
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+toc_depth: 3
+number_sections: true
+theme: lumen
+---
+
+# Variable assignment, data types and conversions, and data structures
+
+Let's get acquainted with the basics of programming in RStudio!
+
+### Variable assignment
+
+We save data in R's memory (a physical location on your computer) through variable assignment. Here, we use the assignment operator `<-` to assing the piece of data __on the left side__ to the variable __on the right side__. For example, to save the value 5 inside the variable `x`, we would type:
+
+```{r}
+x <- 5
+```
+
+... but, nothing is shown on the screen. Now, "call" (retreive from memory) whatever is inside of `x`:
+
+```{r}
+# The value five prints to the console
+x
+```
+
+R is a one-indexed language and [1] means R starts counting from 1 (not 0, like many other languages). Here we see that there is one thing - in the first and only position - inside of `x`. 
+
+### Data Types
+
+These are the five most common classes of data you will encounter: 
+
+1. numeric: decimals (the default for ALL numbers in R)
+2. integer: whole numbers (positive and negative, including zero)
+3. character: text strings (always wrapped in quotations)
+4. logical: TRUE or FALSE (1 or 0)
+5. factor: nominal or ordinal categorical type
+
+Use the `class()` function to check a variable's class (type). 
+
+Key vocabulary:
+
+* Function: performs actions on things, and usually are followed by trailing round parentheses
+* Arguments: the "things" - these go inside of a function's round parentheses and can be values, text, mathematical expressions, or entire datasets
+
+1. Numeric 
+
+```{r}
+class(x)
+```
+
+2. Integer
+
+We can also convert types! To convert to integer:
+
+```{r}
+x_int <- as.integer(x)
+x_int
+class(x_int)
+
+# View the help pages
+?as.integer
+```
+
+3. Character
+
+```{r}
+# Underscore used as placeholder for space:
+my_name <- "Oski"
+my_name
+class(my_name)
+?as.character
+```
+
+4. Logical
+
+Logical data are useful for subsetting:
+
+```{r}
+class(TRUE)
+
+# Check out some relational comparisons!
+8 > 7
+"Berkeley" == "berkeley"
+```
+
+5. Factor
+
+Factor data are what R calls categorical type. see `?factor` to learn more. 
+
+
+### Data Structures
+
+Unless you are explicitly doing mathematics focused programming, the two most common data structures you will encounter are vectors and dataframes.
+
+* Vector = an ordered group of the same type of data
+* Data frame = an ordered group of equal length vectors
+
+Use the `c` function to concatenate a vector, and combine more than one piece of data into one variable:
+
+```{r}
+names <- c("Max", "Sidney", "Tito", "Bella", "Luna", "Ducky")
+names
+?c
+
+# This is a "numeric vector"
+class(names)
+
+# Or
+age <- c(3, 4, 7, 12, 1, 2)
+age
+class(age)
+```
+
+# Import data
+
+### `read.csv()`
+
+The `read.csv()` function is the simplest way to hard-code the data importation process. A "csv" (comma-separated values) file is a plain text file with commas to designate where column breaks should occur. Other seperators include tab, semicolon, pipe, and fixed-width. Import the lunch dataset now:
+
+```{r}
+lunch <- read.csv("School Lunch Data.csv")
+
+# View the "compact structure" (key information): 
+str(lunch)
+
+# View the first six rows
+head(lunch)
+```
+
+
+### The "Import Dataset" button
+
+If this is too confusing, click the "Import Dataset" button at the top right of the "Environment" windowpane in the top right of your RStudio. Then click "From Text (base)..." and then select the lunch dataset. Name it "lunch" and click "OK". 
+
+# One dimensional subsetting
+
+You can extract a single column from a data frame with the `$` operator:
+
+```{r}
+# Show just the "School" variable
+lunch$School
+
+# Divide the API column by 100 and save in a new column
+lunch$new_column <- lunch$API / 100
+head(lunch)
+```
+
+# Two dimension subsetting
+
+Extract just rows 5 thru 8 and columns 1 and 2
+
+```{r}
+lunch_small <- lunch[5:8, 1:2]
+lunch_small
+```
+
+# Logical subsetting
+
+Extract rows of schools only where FLE is less than 30
+
+```{r}
+lunch_FLE30 <- lunch[lunch$FLE < 30, ]
+lunch_FLE30
+
+# Or
+
+lunch_FLE30 <- subset(lunch, subset = FLE < 30)
+lunch_FLE30
+```
+
+# Summarize
+
+`summary` is a useful R function and will give you the correct output depending on the class of the variable that you pass into it. Pass in a data frame or vector to see length of character data, frequencies of factor/categorical data, and six-number summaries of continuous data;
+
+```{r}
+summary(lunch)
+summary(lunch$PE)
+```
+
+
+# 3. Visualize
+
+Include basic plots
+
+```{r}
+# You can even add a hashtag after a line of runnable code!
+
+hist(lunch$FLE, # column to plot
+     breaks = 5, # adjust number of breaks
+     col = "skyblue", # change bar color
+     main = "Distribution of FLE", # change title 
+     xlab = "FLE", # change x-axis label
+     ylab = "", # Leave blank to omit
+     ylim = c(0, 6), # change y-axis limits
+     las = 1) # change tickmark orientation
+```
+
+```{r}
+boxplot(lunch$API, 
+        las = 1, 
+        ylim = c(700, 1000), 
+        main = "API Boxplot", 
+        ylab = "Score")
+```
+
+Make gg-plots
+
+```{r}
+# Unhashtag the line below to install the ggplot2 package
+# install.packages("ggplot2")
+library(ggplot2)
+?ggplot2
+?ggplot
+ggplot(lunch, aes(x = FLE, y = PE, color = School)) + 
+  geom_point() + 
+  theme_bw() + 
+  ggtitle("Relationship of FLE to PE by School")
+```
+
+# 4. Analyze
+
+Ask Dr. Taylor! :) 
