@@ -96,7 +96,7 @@ class(TRUE)
 Factor data are what R calls categorical type. see `?factor` to learn more. 
 
 Delete variables with `rm`
-```{r}
+```{r eval = F}
 # Delete x? 
 rm(x)
 x
@@ -160,7 +160,7 @@ head(lunch)
 # Extract just API
 lunch$API
 hist(lunch$API, col = "turquoise")
-colors()
+# colors()
 
 api <- lunch$API
 hist(api)
