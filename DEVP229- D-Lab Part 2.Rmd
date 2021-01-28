@@ -95,6 +95,13 @@ class(TRUE)
 
 Factor data are what R calls categorical type. see `?factor` to learn more. 
 
+Delete variables with `rm`
+```{r}
+# Delete x? 
+rm(x)
+x
+```
+
 
 ### Data Structures
 
@@ -110,7 +117,8 @@ names <- c("Max", "Sidney", "Tito", "Bella", "Luna", "Ducky")
 names
 ?c
 
-# This is a "numeric vector"
+# This is a "character vector"
+# Add notes with a hashtag
 class(names)
 
 # Or
@@ -118,6 +126,13 @@ age <- c(3, 4, 7, 12, 1, 2)
 age
 class(age)
 ```
+
+Combine into data frame
+```{r}
+dogs <- data.frame(names, age)
+dogs
+```
+
 
 # Import data
 
@@ -127,12 +142,28 @@ The `read.csv()` function is the simplest way to hard-code the data importation 
 
 ```{r}
 lunch <- read.csv("School Lunch Data.csv")
+lunch
+
+# Where is RStudio looking?
+getwd()
+
+# Set working directory?
+# Click Session --> Set Working Directory --> Choose Directory
 
 # View the "compact structure" (key information): 
 str(lunch)
 
+
 # View the first six rows
 head(lunch)
+
+# Extract just API
+lunch$API
+hist(lunch$API, col = "turquoise")
+colors()
+
+api <- lunch$API
+hist(api)
 ```
 
 
@@ -151,16 +182,29 @@ lunch$School
 # Divide the API column by 100 and save in a new column
 lunch$new_column <- lunch$API / 100
 head(lunch)
+lunch
+hist(lunch$new_column, 
+     col = "orange")
 ```
 
 # Two dimension subsetting
 
 Extract just rows 5 thru 8 and columns 1 and 2
 
+Use bracket notation: df[rows, cols]
+
 ```{r}
 lunch_small <- lunch[5:8, 1:2]
 lunch_small
 ```
+
+What if I want rows 5 thru 8 and 17 - along with columns 1, 2, and 4?
+```{r}
+lunch_2 <- lunch[c(5:8, 17) , c(1:2, 4)]
+lunch_2
+names(lunch)
+```
+
 
 # Logical subsetting
 
@@ -171,7 +215,7 @@ lunch_FLE30 <- lunch[lunch$FLE < 30, ]
 lunch_FLE30
 
 # Or
-
+?subset
 lunch_FLE30 <- subset(lunch, subset = FLE < 30)
 lunch_FLE30
 ```
@@ -201,6 +245,7 @@ hist(lunch$FLE, # column to plot
      ylab = "", # Leave blank to omit
      ylim = c(0, 6), # change y-axis limits
      las = 1) # change tickmark orientation
+?hist
 ```
 
 ```{r}
