@@ -1,0 +1,144 @@
+---
+title: "February 17 - DEVP229 - D-Lab Part 3"
+author: "Evan Muzzall"
+date: "1/13/2021"
+output: 
+  html_document: 
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+toc_depth: 3
+number_sections: true
+theme: lumen
+---
+
+# Install Tidyverse
+
+```{r}
+# First, install the tidyverse. Delete the hashtag and run the line below.
+# install.packages("tidyverse")
+library(tidyverse)
+```
+
+# Load the rctdata 
+
+```{r}
+rctdata <- read.csv("rctdata.csv")
+head(rctdata)
+```
+
+# Tidyverse
+
+Base R provides many ways to wrangle and format your data, but the [Tidyverse](https://www.tidyverse.org) offers many more. The syntax is more user-friendly, although the learning curve can seem challenging at first. 
+
+# Pipes `%>%` 
+
+Pipes are found in the [magrittr](https://blog.rstudio.com/2014/12/01/magrittr-1-5/) R package. Pipes take the output of the previous function and pass it in as the first argument of the next function. 
+
+In base R, we could find the mean of a sequence of numbers like this: 
+```{r}
+mean(1:10000)
+```
+
+Or, using pipes we could type
+```{r}
+1:10000 %>% mean
+```
+
+This seems like a trivial difference, but let's take a look at how it can be used to wrangle something more complex!
+
+# dplyr
+
+The [dplyr](https://cran.r-project.org/web/packages/dplyr/vignettes/dplyr.html) R package is built around five functions that use pipes to link them together to perform complex data wrangling in simple steps:
+
+1. filter: rows to include
+2. select: columns to include
+3. group_by: perform grouping operations
+4. summarise: create summary tables 
+5. mutate: add a column to an existing data frame
+
+Let's check these out, one by one:
+
+1. filter
+
+Select only rows where educ is greater than 7.5
+
+```{r}
+rct_educ <- rctdata %>%
+  filter(educ > 7.5)
+rct_educ
+```
+
+... or, select only rows where educ is greater than 7.5 and T is equal to 0
+
+```{r}
+rct_educ2 <- rctdata %>%
+  filter(educ > 7.5,
+         T == 0)
+rct_educ2
+```
+
+2. select
+
+We can then select columns as well, such as just hh and T
+
+```{r}
+rct_small <- rctdata %>%
+  filter(educ > 7.5, 
+         T == 0) %>%
+  select(hh, T) # Why did T change color here? What does T really mean  :^|
+rct_small
+```
+
+3. group_by and 
+4. summarise
+
+Now, let's group by T is equal to 0 or 1 and take the mean of land for each
+
+```{r}
+rct_land_means <- rctdata %>%
+  group_by(T) %>%
+  summarise(mean_land = mean(land))
+rct_land_means
+```
+
+5. mutate
+
+While summarise produces summary tables, mutate will add a column directly to an existing data frame. For example, if we wanted to subtract incbase from incpost and store it in a new column named "inc_diff", we could type:
+
+```{r}
+rct_large <- rctdata %>%
+  mutate(inc_diff = incpost - incbase)
+head(rct_large)
+```
+
+# `tidyr::pivot_longer`
+
+Reshaping data can also take some getting used to. The tidyr R package's [`pivot_longer`](https://tidyr.tidyverse.org/reference/pivot_longer.html) function can help elongate data by increasing the number of rows, but decreasing the number of columns. This is useful if you want to ensure that each row contains unique information. 
+
+First, take a look at the first five rows of the rctdataset
+
+```{r}
+head(rctdata, 5)
+
+# or :) 
+
+rctdata %>% head(5)
+```
+
+Now, what if we want to separate incbase and incpost into their own rows, but that contain the same information for hh, educ, land, and T?
+
+```{r}
+?pivot_longer
+
+rctdata_long <- rctdata %>% 
+  pivot_longer(
+    # Columns to pivot to the longer format
+    cols = c(4,6), 
+    # Name for the column that contains the columns to be pivoted
+    names_to = "income",
+    # Name for the column that contains the values
+    values_to = "value"
+  )
+head(rctdata_long)
+```
